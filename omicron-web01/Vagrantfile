@@ -22,6 +22,7 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "#{gdrive_repo}/php.cake.cms", "/mnt/repo/php.cake.cms", owner:"#{share_user}", group:"www-data"
   config.vm.synced_folder "#{gdrive_repo}/php.net.wardx", "/mnt/repo/php.net.wardx", owner:"#{share_user}", group:"www-data"
   config.vm.synced_folder "#{gdrive_repo}/php.pl.net.dopierala", "/mnt/repo/php.pl.net.dopierala", owner:"#{share_user}", group:"www-data"
+  config.vm.synced_folder "#{gdrive_repo}/php.pl.net.omicron.skynet", "/mnt/repo/php.pl.net.omicron.skynet", owner:"#{share_user}", group:"www-data"
   #config.vm.synced_folder shared_path, "/mnt/shared_files", owner:"www-data", group:"www-data"
   
   # Provider-specific configuration so you can fine-tune various

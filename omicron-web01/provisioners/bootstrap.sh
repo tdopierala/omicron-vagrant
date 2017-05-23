@@ -45,6 +45,7 @@ ln -s /mnt/repo/php.cake.cms/ /var/www/html/cms >> /vagrant/log/vm_build.log 2>&
 ln -s /mnt/repo/php.net.wardx/ /var/www/html/local.wardx.net >> /vagrant/log/vm_build.log 2>&1
 ln -s /mnt/repo/php.pl.net.dopierala/ /var/www/html/local.dopierala.net.pl >> /vagrant/log/vm_build.log 2>&1
 ln -s /mnt/repo/php.pl.omicronsoftware/ /var/www/html/local.omicronsoftware.pl >> /vagrant/log/vm_build.log 2>&1
+ln -s /mnt/repo/php.pl.net.omicron.skynet/ /var/www/html/local.skynet.omicron.net.pl >> /vagrant/log/vm_build.log 2>&1
 
 #if ! [ -L /var/www ]; then
 #  rm -rf /var/www
