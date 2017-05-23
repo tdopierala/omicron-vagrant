@@ -1,0 +1,20 @@
+Enabling site local.wardx.net.
+To activate the new configuration, you need to run:
+  service apache2 reload
+Enabling site local.dopierala.net.pl.
+To activate the new configuration, you need to run:
+  service apache2 reload
+Enabling site local.wardx.net.
+To activate the new configuration, you need to run:
+  service apache2 reload
+Enabling site local.dopierala.net.pl.
+To activate the new configuration, you need to run:
+  service apache2 reload
+Site local.wardx.net already enabled
+Site local.dopierala.net.pl already enabled
+Enabling site local.wardx.net.
+To activate the new configuration, you need to run:
+  service apache2 reload
+Enabling site local.dopierala.net.pl.
+To activate the new configuration, you need to run:
+  service apache2 reload
