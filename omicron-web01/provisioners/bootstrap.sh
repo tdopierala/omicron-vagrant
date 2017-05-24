@@ -2,8 +2,8 @@
 
 # Variables
 DBHOST=localhost
-DBNAME=dbname
-DBUSER=dbuser
+DBNAME=playground
+DBUSER=omicron
 DBPASSWD=12345
 
 echo -e "\n=> Updating packages list\n"
@@ -17,9 +17,9 @@ debconf-set-selections <<< "mysql-server mysql-server/root_password password $DB
 debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $DBPASSWD"
 apt-get -y install mysql-server >> /vagrant/log/vm_build.log 2>&1
 
-#echo -e "\n=> Setting up our MySQL user and db ---\n"
-#mysql -uroot -p$DBPASSWD -e "CREATE DATABASE $DBNAME" >> /vagrant/vm_build.log 2>&1
-#mysql -uroot -p$DBPASSWD -e "grant all privileges on $DBNAME.* to '$DBUSER'@'localhost' identified by '$DBPASSWD'" > /vagrant/vm_build.log 2>&1
+echo -e "\n=> Setting up our MySQL user and db\n"
+mysql -uroot -p$DBPASSWD -e "CREATE DATABASE $DBNAME" >> /vagrant/log/vm_build.log 2>&1
+mysql -uroot -p$DBPASSWD -e "grant all privileges on $DBNAME.* to '$DBUSER'@'localhost' identified by '$DBPASSWD'" >> /vagrant/log/vm_build.log 2>&1
 
 echo -e "\n=> Installing Apache Server\n"
 apt-get -y install php5 apache2 >> /vagrant/log/vm_build.log 2>&1
@@ -31,6 +31,10 @@ wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg >> 
 echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list
 apt-get update
 apt-get -y install php7.1 libapache2-mod-php7.1 php7.1-curl php7.1-gd php7.1-mysql php-gettext php7.1-intl php7.1-mbstring >> /vagrant/log/vm_build.log 2>&1
+
+echo -e "\n=> Enabling php7.1\n"
+a2dismod php5 >> /vagrant/log/vm_build.log 2>&1
+a2enmod php7.1 >> /vagrant/log/vm_build.log 2>&1
 
 echo -e "\n=> Enabling mod-rewrite\n"
 a2enmod rewrite >> /vagrant/log/vm_build.log 2>&1
@@ -46,6 +50,7 @@ ln -s /mnt/repo/php.net.wardx/ /var/www/html/local.wardx.net >> /vagrant/log/vm_
 ln -s /mnt/repo/php.pl.net.dopierala/ /var/www/html/local.dopierala.net.pl >> /vagrant/log/vm_build.log 2>&1
 #ln -s /mnt/repo/php.pl.omicronsoftware/ /var/www/html/local.omicronsoftware.pl >> /vagrant/log/vm_build.log 2>&1
 ln -s /mnt/repo/php.pl.net.omicron.skynet/ /var/www/html/local.skynet.omicron.net.pl >> /vagrant/log/vm_build.log 2>&1
+ln -s /mnt/repo/php.net.wardx.mercudo/ /var/www/html/local.mercudo.wardx.net >> /vagrant/log/vm_build.log 2>&1
 
 #if ! [ -L /var/www ]; then
 #  rm -rf /var/www
