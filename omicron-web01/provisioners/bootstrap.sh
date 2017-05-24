@@ -10,7 +10,7 @@ echo -e "\n=> Updating packages list\n"
 apt-get update
 
 echo -e "\n=> Install base packages\n"
-apt-get -y install vim curl build-essential python-software-properties git >> /vagrant/log/vm_build.log 2>&1
+apt-get -y install vim curl build-essential python-software-properties git zip unzip >> /vagrant/log/vm_build.log 2>&1
 
 echo -e "\n=> Install MySQL specific packages and settings\n"
 debconf-set-selections <<< "mysql-server mysql-server/root_password password $DBPASSWD"
@@ -30,7 +30,7 @@ apt-get -y install apt-transport-https lsb-release ca-certificates >> /vagrant/l
 wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg >> /vagrant/log/vm_build.log 2>&1
 echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list
 apt-get update
-apt-get -y install php7.1 libapache2-mod-php7.1 php7.1-curl php7.1-gd php7.1-mysql php-gettext >> /vagrant/log/vm_build.log 2>&1
+apt-get -y install php7.1 libapache2-mod-php7.1 php7.1-curl php7.1-gd php7.1-mysql php-gettext php7.1-intl php7.1-mbstring >> /vagrant/log/vm_build.log 2>&1
 
 echo -e "\n=> Enabling mod-rewrite\n"
 a2enmod rewrite >> /vagrant/log/vm_build.log 2>&1
@@ -44,7 +44,7 @@ echo -e "\n=> Setting document root to public directory\n"
 ln -s /mnt/repo/php.cake.cms/ /var/www/html/cms >> /vagrant/log/vm_build.log 2>&1
 ln -s /mnt/repo/php.net.wardx/ /var/www/html/local.wardx.net >> /vagrant/log/vm_build.log 2>&1
 ln -s /mnt/repo/php.pl.net.dopierala/ /var/www/html/local.dopierala.net.pl >> /vagrant/log/vm_build.log 2>&1
-ln -s /mnt/repo/php.pl.omicronsoftware/ /var/www/html/local.omicronsoftware.pl >> /vagrant/log/vm_build.log 2>&1
+#ln -s /mnt/repo/php.pl.omicronsoftware/ /var/www/html/local.omicronsoftware.pl >> /vagrant/log/vm_build.log 2>&1
 ln -s /mnt/repo/php.pl.net.omicron.skynet/ /var/www/html/local.skynet.omicron.net.pl >> /vagrant/log/vm_build.log 2>&1
 
 #if ! [ -L /var/www ]; then
