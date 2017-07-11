@@ -8,23 +8,17 @@ share_user = "www-data"
 vm_ip_address = "192.168.33.101"
 vm_name = "omicron-web01"
 gdrive_repo = path_prefix + "gdrive/Repositories"
-shared_path = path_prefix + "shared_files"
 
 
 Vagrant.configure("2") do |config|
 
 	config.vm.box = "debian/jessie64"
 
-	#config.vm.network :forwarded_port, guest: 80, host: 8080
 	config.vm.network "private_network", ip: vm_ip_address
 	config.vm.hostname = vm_name
 
-	config.vm.synced_folder "#{gdrive_repo}/php.cake.cms", "/mnt/repo/php.cake.cms", owner:"#{share_user}", group:"www-data"
-	config.vm.synced_folder "#{gdrive_repo}/php.net.wardx", "/mnt/repo/php.net.wardx", owner:"#{share_user}", group:"www-data"
-	config.vm.synced_folder "#{gdrive_repo}/php.pl.net.dopierala", "/mnt/repo/php.pl.net.dopierala", owner:"#{share_user}", group:"www-data"
-	config.vm.synced_folder "#{gdrive_repo}/php.pl.net.omicron.skynet", "/mnt/repo/php.pl.net.omicron.skynet", owner:"#{share_user}", group:"www-data"
-	config.vm.synced_folder "#{gdrive_repo}/php.net.wardx.mercudo", "/mnt/repo/php.net.wardx.mercudo", owner:"#{share_user}", group:"www-data"
-	#config.vm.synced_folder shared_path, "/mnt/shared_files", owner:"www-data", group:"www-data"
+	config.vm.synced_folder "#{gdrive_repo}/", "/mnt/repo", owner:"#{share_user}", group:"www-data"	
+	config.vm.synced_folder '../', "/vagrant-base",owner: "vagrant", group: "vagrant"
 
 	# Provider-specific configuration so you can fine-tune various
 	# backing providers for Vagrant. These expose provider-specific options.
