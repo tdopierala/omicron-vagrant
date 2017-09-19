@@ -10,7 +10,7 @@ echo -e "\n=> Installing Apache Server\n"
 apt-get -y install php5 apache2 >> /vagrant/log/vm_build.log 2>&1
 
 echo -e "\n=> Installing PHP packages\n"
-apt-get -y install php5 libapache2-mod-php5 php5-curl php5-gd php5-mysql php-gettext php5-intl php5-mbstring >> /vagrant/log/vm_build.log 2>&1
+apt-get -y install php5 libapache2-mod-php5 php5-curl php5-gd php5-mysql php-gettext php5-intl >> /vagrant/log/vm_build.log 2>&1
 
 echo -e "\n=> Enabling mod-rewrite\n"
 a2enmod rewrite >> /vagrant/log/vm_build.log 2>&1
