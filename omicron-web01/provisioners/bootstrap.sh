@@ -29,7 +29,7 @@ apt-get -y install apt-transport-https lsb-release ca-certificates >> /vagrant/l
 wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg >> /vagrant/log/vm_build.log 2>&1
 echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list
 apt-get update
-apt-get -y install php7.1 libapache2-mod-php7.1 php7.1-curl php7.1-gd php7.1-mysql php-gettext php7.1-intl php7.1-mbstring >> /vagrant/log/vm_build.log 2>&1
+apt-get -y install php7.1 libapache2-mod-php7.1 php7.1-curl php7.1-gd php7.1-mysql php-gettext php7.1-intl php7.1-mbstring php7.1-xml php-pear >> /vagrant/log/vm_build.log 2>&1
 
 echo -e "\n=> Enabling php7.1\n"
 a2dismod php5 >> /vagrant/log/vm_build.log 2>&1
@@ -44,6 +44,7 @@ a2enmod rewrite >> /vagrant/log/vm_build.log 2>&1
 echo -e "\n=> Setting document root to public directory\n"
 #rm -rf /var/www
 #ln -fs /vagrant/public /var/www
+ln -s /mnt/repo/ /var/www/html/r >> /vagrant/log/vm_build.log 2>&1
 ln -s /mnt/repo/php.net.wardx/ /var/www/html/local.wardx.net >> /vagrant/log/vm_build.log 2>&1
 ln -s /mnt/repo/php.pl.net.dopierala/ /var/www/html/local.dopierala.net.pl >> /vagrant/log/vm_build.log 2>&1
 ln -s /mnt/repo/php.pl.net.omicron/ /var/www/html/local.omicron.net.pl >> /vagrant/log/vm_build.log 2>&1
