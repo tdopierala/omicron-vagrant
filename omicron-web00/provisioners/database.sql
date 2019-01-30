@@ -2,7 +2,7 @@
 
 CREATE DATABASE omicron;
 
-CREATE TABLE IF NOT EXISTS `omicron`.`users` (
+CREATE TABLE IF NOT EXISTS `omicron`.`user` (
   `id` int(5) NOT NULL AUTO_INCREMENT,
   `login` varchar(100) NOT NULL,
   `password` varchar(33) NOT NULL,
@@ -13,5 +13,5 @@ CREATE TABLE IF NOT EXISTS `omicron`.`users` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10;
 
-INSERT INTO `omicron`.`users` (`id`, `login`, `password`, `name`, `createdate`, `email`, `status`) VALUES
+INSERT INTO `omicron`.`user` (`id`, `login`, `password`, `name`, `createdate`, `email`, `status`) VALUES
 (100, 'dopiet', 'e13b23dca87dea3378becc34cc513f50', 'Tomasz Dopierała', '2010-02-01', 'dopierala.tomasz@wp.pl', 1);

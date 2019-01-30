@@ -5,7 +5,7 @@ DBHOST=localhost
 DBNAME=vagrant
 DBUSER=omicron
 DBPASSWD=12345
-APPS=('phpmyadmin' 'odin' 'omicron' 'frontend')
+APPS=('phpmyadmin' 'odin' 'omicron' 'frontend' 'feeder' 'php-feed-scanner')
 
 echo -e "\n"
 
@@ -38,7 +38,7 @@ apt-get -y install mysql-server >> /vagrant/log/vm_build.log 2>&1
 
 echo -e "\n=> Loading database...\n"
 mysql -uroot -p$DBPASSWD -e "GRANT ALL on *.* to '$DBUSER'@'localhost' identified by '$DBPASSWD'" >> /vagrant/log/vm_build.log 2>&1
-mysql -uroot -p$DBPASSWD $DBNAME < /vagrant/provisioners/database.sql
+mysql -uroot -p$DBPASSWD < /vagrant/provisioners/database.sql
 
 echo -e "\n=> Enabling mod-rewrite...\n"
 a2enmod rewrite >> /vagrant/log/vm_build.log 2>&1
