@@ -1,0 +1,27 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+path_prefix = "C:/";
+share_user = "www-data"
+
+# server configuration
+vm_ip_address = "192.168.56.104"
+vm_name = "omicron-web04"
+gdrive_repo = path_prefix + "gdrive/Repositories"
+
+Vagrant.configure("2") do |config|
+
+	config.vm.box = "debian/jessie64"
+  
+	config.vm.network "private_network", ip: vm_ip_address
+	#config.vm.hostname = vm_name
+	
+	#config.vm.provision :shell, path: "provisioners/bootstrap.sh"
+
+	#config.vm.provision :shell, path: "provisioners/vhosts.sh"
+
+	config.proxy.http     = "http://135.245.192.7:8000/"
+	config.proxy.https    = "http://135.245.192.7:8000/"
+	config.proxy.no_proxy = "localhost,127.0.0.1/"
+
+end
