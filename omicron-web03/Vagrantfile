@@ -23,7 +23,6 @@ Vagrant.configure("2") do |config|
 
     # provisioning
     config.vm.provision :shell, path: "provisioners/bootstrap.sh"
-
-    #config.vm.provision :shell, path: "provisioners/vhosts.sh"
+    config.vm.provision :shell, path: "provisioners/vhosts.sh"
 
 end

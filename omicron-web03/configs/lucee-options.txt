@@ -1,0 +1,9 @@
+luceepass=123456
+installdir=/opt/lucee
+tomcatport=8888
+tomcatshutdownport=8006
+tomcatajpport=8010
+systemuser=root
+startatboot=true
+installconn=true
+apachecontrolloc=/usr/sbin/apachectl

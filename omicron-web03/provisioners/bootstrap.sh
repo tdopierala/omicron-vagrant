@@ -7,14 +7,54 @@ apt-get update >> /vagrant/log/vm_build.log 2>&1
 apt-get upgrade >> /vagrant/log/vm_build.log 2>&1
 
 echo -e "\n=> Install base packages...\n"
-apt-get -y install vim net-tools curl build-essential software-properties-common git zip unzip >> /vagrant/log/vm_build.log 2>&1
+apt-get -y install vim net-tools curl build-essential software-properties-common git zip unzip apt-transport-https >> /vagrant/log/vm_build.log 2>&1
 
 echo -e "\n=> Installing Apache Server...\n"
 apt-get -y install apache2 >> /vagrant/log/vm_build.log 2>&1
 
-echo -e "\n=> Installing Lucee Server...\n"
-wget https://cdn.lucee.org/lucee-5.2.8.050-pl0-linux-x64-installer.run
-chmod +x lucee-5.2.8.050-pl0-linux-x64-installer.run
+sudo chgrp -R www-data /var/www/html
+sudo usermod -a -G www-data vagrant
+sudo chmod -R 775 /var/www/html
+
+
+#echo -e "\n=> Installing PHP packages...\n"
+#apt-get -y install php >> /vagrant/log/vm_build.log 2>&1
+
+echo -e "\n=> Installing Java JDK\n"
+apt-get -y install default-jdk >> /vagrant/log/vm_build.log 2>&1
+
+echo -e "\n=> Installing Apache Tomcat...\n"
+TOMCAT=9.0.16
+#apt-get -y install tomcat7 >> /vagrant/log/vm_build.log 2>&1
+wget http://ftp.man.poznan.pl/apache/tomcat/tomcat-9/v$TOMCAT/bin/apache-tomcat-$TOMCAT.tar.gz  >> /vagrant/log/vm_build.log 2>&1
+sudo tar -xzvf apache-tomcat-$TOMCAT.tar.gz  >> /vagrant/log/vm_build.log 2>&1
+
+sudo mv apache-tomcat-$TOMCAT /opt/tomcat  >> /vagrant/log/vm_build.log 2>&1
+sudo useradd -r tomcat9 --shell /bin/false  >> /vagrant/log/vm_build.log 2>&1
+sudo chown -R tomcat9 /opt/tomcat/  >> /vagrant/log/vm_build.log 2>&1
+sudo /opt/tomcat/bin/startup.sh >> /vagrant/log/vm_build.log 2>&1
+
+#echo -e "\n=> Installing Lucee Server...\n"
+#LUCEE=lucee-5.2.9.031-pl1-linux-x64-installer.run
+#wget https://cdn.lucee.org/$LUCEE  >> /vagrant/log/vm_build.log 2>&1
+#sudo chmod +x $LUCEE  >> /vagrant/log/vm_build.log 2>&1
+#sudo ./$LUCEE --mode unattended --optionfile /vagrant/configs/lucee-options.txt >> /vagrant/log/vm_build.log 2>&1
+
+#echo -e "\n=> Installing CommandBox...\n"
+#curl -fsSl https://downloads.ortussolutions.com/debs/gpg | sudo apt-key add - >> /vagrant/log/vm_build.log 2>&1
+#echo "deb http://downloads.ortussolutions.com/debs/noarch /" | sudo tee -a /etc/apt/sources.list.d/commandbox.list >> /vagrant/log/vm_build.log 2>&1
+#sudo apt-get update && sudo apt-get install commandbox >> /vagrant/log/vm_build.log 2>&1
+
+#cp /vagrant/index.cfm /var/www/html/
+
+echo -e "\n=> Setting document root to public directory...\n"
+APPS=('cfml-cfwheels-test' 'cfml-coldbox-test' 'cfml-monkey-express')
+for dir in "${APPS[@]}"
+do :
+    rm -f "/var/www/html/"$dir >> /vagrant/log/vm_build.log 2>&1
+    ln -s "/mnt/repo/"$dir "/var/www/html/"$dir >> /vagrant/log/vm_build.log 2>&1
+done
+
 #./lucee-5.2.8.050-pl0-linux-x64-installer.run
 
 #echo -e "\n=> Installing Java JRE\n"
