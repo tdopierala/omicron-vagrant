@@ -48,7 +48,7 @@ sudo /opt/tomcat/bin/startup.sh >> /vagrant/log/vm_build.log 2>&1
 #cp /vagrant/index.cfm /var/www/html/
 
 echo -e "\n=> Setting document root to public directory...\n"
-APPS=('cfml-cfwheels-test' 'cfml-coldbox-test' 'cfml-monkey-express')
+APPS=('cfml-cfwheels-test' 'cfml-coldbox-test' 'cfml-monkey-express' 'playground')
 for dir in "${APPS[@]}"
 do :
     rm -f "/var/www/html/"$dir >> /vagrant/log/vm_build.log 2>&1
