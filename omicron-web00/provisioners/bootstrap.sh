@@ -5,7 +5,7 @@ DBHOST=localhost
 DBNAME=vagrant
 DBUSER=omicron
 DBPASSWD=12345
-APPS=('phpmyadmin' 'odin' 'omicron' 'frontend' 'feeder' 'php-feed-scanner')
+APPS=('phpmyadmin' 'odin' 'omicron' 'frontend' 'feeder' 'php-feed-scanner', 'cakephp-adminlte')
 
 echo -e "\n"
 
