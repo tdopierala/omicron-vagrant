@@ -1,2 +1,5 @@
 .vagrant
 *.log
+**/configs/vhosts/
+**/configs/cert/
+**/backup/
