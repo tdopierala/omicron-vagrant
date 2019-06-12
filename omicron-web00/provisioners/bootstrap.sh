@@ -5,7 +5,8 @@ DBHOST=localhost
 DBNAME=vagrant
 DBUSER=omicron
 DBPASSWD=12345
-APPS=('phpmyadmin' 'odin' 'omicron' 'frontend' 'feeder' 'php-feed-scanner' 'cakephp-adminlte' 'myweather' 'symfony4-rest-api' 's4api')
+#APPS=('phpmyadmin' 'odin' 'omicron' 'frontend' 'feeder' 'php-feed-scanner' 'cakephp-adminlte' 'myweather' 'symfony4-rest-api' 's4api')
+IFS=$'\n' read -d '' -r -a APPS < /vagrant-dir/provisioners/vhosts.txt
 
 echo -e "\n"
 
@@ -61,11 +62,12 @@ mv composer.phar /usr/local/bin/composer >> /vagrant-dir/log/vm-build-$(date +\%
 chmod +x /usr/local/bin/composer >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 
 echo -e "\n=> Setting document root to public directory...\n"
-for dir in "${APPS[@]}"
-do :
-    rm -f "/var/www/html/"$dir >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-    ln -s "/mnt/repo/"$dir "/var/www/html/"$dir >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-    touch "/vagrant/configs/vhosts2/"$dir".conf" >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+for node in "${APPS[@]}"
+do
+	IFS='|' read -r -a dir <<< "$node"
+    rm -f "/var/www/html/${dir[0]}" >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+    ln -s "/mnt/repo/${dir[0]}" "/var/www/html/"$dir >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+    touch "/vagrant/configs/vhosts2/${dir[0]}.conf" >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 done
 
 echo -e "\n"

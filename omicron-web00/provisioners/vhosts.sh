@@ -1,18 +1,42 @@
 #!/usr/bin/env bash
 
 url="omicron00.local"
+IFS=$'\n' read -d '' -r -a APPS < /vagrant-dir/provisioners/vhosts.txt
 
 echo -e "\n=> Disabling vhosts:"
 for site in `apache2ctl -S | grep namevhost | grep -o 'sites-enabled/[^:]*' | cut -c 15-`; do
     if [[ "$site" != "000-default.conf" ]]
     then
         a2dissite $site >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
+
+        if [[ -f /etc/apache2/sites-available/${site} ]]; then
+            rm /etc/apache2/sites-available/${site} >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
+        fi
+
         echo -e "> vhost $site disabled"
     fi
 done
 
+echo -e "\n=> Generating vhosts config files..."
+for node in "${APPS[@]}"
+do
+    IFS='|' read -r -a vhost <<< "$node"
+
+    host=${vhost[0]}
+    domain=$(echo "$host.$url")
+    root=${vhost[2]}
+    ssl=${vhost[1]}
+
+    if [[ -f /vagrant-dir/configs/vhosts/${host}.conf ]]; then
+        rm /vagrant-dir/configs/vhosts/${host}.conf >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
+    fi
+
+    /vagrant-dir/provisioners/makeconf.sh ${url} ${host} ${ssl} ${root} > /vagrant-dir/configs/vhosts/${host}.conf
+    echo -e "> vhost config for ${host} generated"
+done
+
 echo -e "\n=> Setuping vhosts:"
-for file in /vagrant/configs/vhosts/*
+for file in /vagrant-dir/configs/vhosts/*
 do
     if [[ -f $file ]]; then
         filename=$(basename $file)
@@ -26,47 +50,13 @@ do
         host=$(echo $filename | rev | cut -c 6- | rev)
         domain=$(echo "$host.$url")
 
-        : '
-        read -r -d '' fileconf <<- EOM
-        <VirtualHost *:443>
-            ServerName $domain
-            ServerAdmin webmaster@wardx.net
-            DocumentRoot /var/www/html/$host/public
-
-            SSLEngine on
-            SSLCertificateFile /vagrant/configs/cert/$domain.cert
-            SSLCertificateKeyFile /vagrant/configs/cert/$domain.key
-
-            #Redirect permanent / https://symfony4-rest-api.omicron00.local/
-
-            ErrorLog ${APACHE_LOG_DIR}/error.log
-            CustomLog ${APACHE_LOG_DIR}/access.log combined
-
-            <Directory /var/www/html/$domain/public/>
-
-                <IfModule mod_rewrite.c>
-                    RewriteEngine On
-                    RewriteCond %{REQUEST_FILENAME} !-f
-                    RewriteRule ^ index.php [L]
-                </IfModule>
-
-                Options FollowSymLinks
-                AllowOverride All
-                    Order allow,deny
-                    Allow from all
-
-            </Directory>
-        </VirtualHost>
-        EOM
-        '
-
         #coping vhost file
         
         if [[ -f /etc/apache2/sites-available/$filename ]]; then
             rm /etc/apache2/sites-available/$filename >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
         fi
-        
-        cp /vagrant/configs/vhosts/$filename /etc/apache2/sites-available/$filename >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
+
+        cp /vagrant-dir/configs/vhosts/$filename /etc/apache2/sites-available/$filename >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
         a2ensite $filename >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
         echo -e "> generating vhost $filename"
         
