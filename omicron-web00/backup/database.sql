@@ -1,5 +1,8 @@
 -- Main sql file
 
+GRANT ALL PRIVILEGES ON *.* to 'omicron'@'localhost' identified by '12345' WITH GRANT OPTION;
+
+DROP SCHEMA IF EXISTS omicron;
 CREATE DATABASE omicron;
 
 CREATE TABLE IF NOT EXISTS `omicron`.`user` (
@@ -14,4 +17,4 @@ CREATE TABLE IF NOT EXISTS `omicron`.`user` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10;
 
 INSERT INTO `omicron`.`user` (`id`, `login`, `password`, `name`, `createdate`, `email`, `status`) VALUES
-(100, 'dopiet', 'e13b23dca87dea3378becc34cc513f50', 'Tomasz Dopierała', '2010-02-01', 'dopierala.tomasz@wp.pl', 1);
+(100, 'dopiet', 'e13b23dca87dea3378becc34cc513f50', 'Tomasz Dopierała', '2010-02-01', 'dopierala.tomasz@gmail.com', 1);
