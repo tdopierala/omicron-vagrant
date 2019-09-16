@@ -2,6 +2,8 @@
 *.log
 *.bin
 *.jar
+*.tar.gz
 **/configs/vhosts/
 **/configs/cert/
 **/backup/
+**/lib/
