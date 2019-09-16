@@ -1,36 +1,41 @@
 #!/usr/bin/env bash
 
 # Variables
+phpv=7.3
+
 DBHOST=localhost
 DBNAME=vagrant
 DBUSER=omicron
 DBPASSWD=12345
-#APPS=('phpmyadmin' 'odin' 'omicron' 'frontend' 'feeder' 'php-feed-scanner' 'cakephp-adminlte' 'myweather' 'symfony4-rest-api' 's4api')
+
 IFS=$'\n' read -d '' -r -a APPS < /vagrant-dir/provisioners/vhosts.txt
 
 echo -e "\n"
 
 echo -e "\n=> Updating packages list...\n"
-apt-get update >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-apt-get upgrade >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+apt-get -y update >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+#apt-get -y upgrade >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 
 echo -e "\n=> Install base packages...\n"
 apt-get -y install vim net-tools curl build-essential software-properties-common git zip unzip >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 
+echo -e "\n=> Installing Lynx for omi-search...\n"
+apt-get -y install lynx >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+
 echo -e "\n=> Install Node.js...\n"
-curl -sL https://deb.nodesource.com/setup_10.x | sudo bash - >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+curl -sL https://deb.nodesource.com/setup_12.x | sudo bash - >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 apt-get -y install nodejs >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 
 echo -e "\n=> Installing Apache Server...\n"
 apt-get -y install apache2 >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 
-echo -e "\n=> Installing PHP packages...\n"
+echo -e "\n=> Installing PHP${phpv} packages...\n"
 apt-get -y install ca-certificates apt-transport-https >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add - >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 echo "deb https://packages.sury.org/php/ stretch main" | sudo tee /etc/apt/sources.list.d/php.list >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 
 apt-get update >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-apt-get -y install php7.2 php7.2-cli php7.2-common php7.2-curl php7.2-mbstring php7.2-mysql php7.2-xml libapache2-mod-php7.2 php7.2-gd php-gettext php7.2-intl php-pear >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+apt-get -y install php${phpv} php${phpv}-cli php${phpv}-common php${phpv}-curl php${phpv}-mbstring php${phpv}-mysql php${phpv}-xml libapache2-mod-php${phpv} php${phpv}-gd php-gettext php${phpv}-intl php-pear >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 
 echo -e "\n=> Install MySQL packages and settings...\n"
 debconf-set-selections <<< "mysql-server mysql-server/root_password password $DBPASSWD"
@@ -58,16 +63,26 @@ sudo a2enmod headers >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 
 echo -e "\n=> Installing Composer\n"
 curl -sS https://getcomposer.org/installer | php >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-mv composer.phar /usr/local/bin/composer >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+mv -f composer.phar /usr/local/bin/composer >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 chmod +x /usr/local/bin/composer >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 
 echo -e "\n=> Setting document root to public directory...\n"
+
+for file in /vagrant-dir/configs/vhosts/*
+do
+	rm -f "/var/www/html/${file}" >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+done
+
+#mkdir /home/vagrant/fakehost
 for node in "${APPS[@]}"
 do
 	IFS='|' read -r -a dir <<< "$node"
-    rm -f "/var/www/html/${dir[0]}" >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+#	mkdir /home/vagrant/fakehost/${dir[0]}
+#	touch /home/vagrant/fakehost/${dir[0]}/index.php
+#	echo "<?php echo '<h1>Home page: ${dir[0]}</h1>'; ?>" > /home/vagrant/fakehost/${dir[0]}/index.php
+#	ln -s "/home/vagrant/fakehost/${dir[0]}" "/var/www/html/"$dir >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+
     ln -s "/mnt/repo/${dir[0]}" "/var/www/html/"$dir >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-    touch "/vagrant/configs/vhosts2/${dir[0]}.conf" >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 done
 
 echo -e "\n"

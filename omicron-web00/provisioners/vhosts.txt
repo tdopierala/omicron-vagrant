@@ -1,10 +1,9 @@
-phpmyadmin|http||
-odin|http||
 omicron|http||
-frontend|http||
-feeder|http||
-php-feed-scanner|http||
-cakephp-adminlte|http||
+odin|http|/public|
+digit|http|/webroot|
+phpmyadmin|http||
+cakephp2adminlte|http||
 myweather|https|/vue/dist|
-symfony4-rest-api|https|/public|
+symfony4restapi|https|/public|
 s4api|https|/public|
+omi-search|https|/webroot|
