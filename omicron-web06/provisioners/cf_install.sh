@@ -62,18 +62,18 @@ sudo chgrp bin /opt/coldfusion2016/cfusion/lib/${jbcrypt_java}
 
 
 ## jdk-8u192 Install
-echo -e "\njdk-8u192 Install..."
-if [[ ! -f /vagrant-dir/lib/${jdk8} ]]; then
-	wget ${url}/${jdk8}
-    mv ./${jdk8} /vagrant-dir/lib/
-fi
-
-if [[ -d /vagrant-dir/lib/jdk1.8.0_192 ]]; then
-    sudo rm -R /vagrant-dir/lib/jdk1.8.0_192
-fi
-
-sudo tar -xzf /vagrant-dir/lib/jdk-8u192-linux-x64.tar.gz -C /vagrant-dir/lib/
-sudo rm -R /opt/coldfusion2016/jre
-sudo mv /vagrant-dir/lib/jdk1.8.0_192 /opt/coldfusion2016/jre
+#echo -e "\njdk-8u192 Install..."
+#if [[ ! -f /vagrant-dir/lib/${jdk8} ]]; then
+#	wget ${url}/${jdk8}
+#    mv ./${jdk8} /vagrant-dir/lib/
+#fi
+#
+#if [[ -d /vagrant-dir/lib/jdk1.8.0_192 ]]; then
+#    sudo rm -R /vagrant-dir/lib/jdk1.8.0_192
+#fi
+#
+#sudo tar -xzf /vagrant-dir/lib/jdk-8u192-linux-x64.tar.gz -C /vagrant-dir/lib/
+#sudo rm -R /opt/coldfusion2016/jre
+#sudo mv /vagrant-dir/lib/jdk1.8.0_192 /opt/coldfusion2016/jre
 
 sudo /opt/coldfusion2016/cfusion/bin/coldfusion restart

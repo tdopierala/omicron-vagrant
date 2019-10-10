@@ -62,9 +62,4 @@ a2enmod ssl >> /vagrant-dir/log/vm-build.log 2>&1
 
 a2enmod headers >> /vagrant-dir/log/vm-build.log 2>&1
 
-echo -e "\n=> Installing Composer\n"
-curl -sS https://getcomposer.org/installer | php >> /vagrant-dir/log/vm-build.log 2>&1
-mv -f composer.phar /usr/local/bin/composer >> /vagrant-dir/log/vm-build.log 2>&1
-chmod +x /usr/local/bin/composer >> /vagrant-dir/log/vm-build.log 2>&1
-
 echo -e "\n"
