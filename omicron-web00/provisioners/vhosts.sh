@@ -3,12 +3,25 @@
 url="omicron00.local"
 IFS=$'\n' read -d '' -r -a APPS < /vagrant-dir/provisioners/vhosts.txt
 
+echo -e "\n=> Adding nonexistent symlinks for vhosts..."
+echo -e "\n Adding nonexistent symlinks for vhosts...\n" >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
+for node in "${APPS[@]}"
+do
+	IFS='|' read -r -a dir <<< "$node"
+    if [[ ! -L /var/www/html/$dir ]]; then
+		ln -s "/mnt/repo/${dir[0]}" "/var/www/html/"$dir >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
+        echo -e " > generating symlink for vhost $dir (/var/www/html/$dir)"
+	fi    
+done
+
+
 # usuwanie istniejących vhostów
 
 echo -e "\n=> Disabling vhosts..."
-for site in `apache2ctl -S | grep namevhost | grep -o 'sites-enabled/[^:]*' | cut -c 15-`
+echo -e "\n Disabling vhosts...\n" >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
+for site in `apache2ctl -S | grep '80 namevhost' | grep -o 'sites-enabled/[^:]*' | cut -c 15-`
 do
-	if [[ "$site" != "000-default" && "$site" != "default-ssl" ]]
+	if [[ "$site" != "000-default.conf" ]]
 	then
 		a2dissite $site >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
 
@@ -21,8 +34,10 @@ do
 	fi
 done
 
+
 # usuwanie pozostałych vhostów
 
+echo -e "\n Removing old vhosts...\n" >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
 for site in /etc/apache2/sites-available/*
 do
 	file=$(basename $site)
@@ -41,9 +56,11 @@ do
 	rm /vagrant-dir/configs/vhosts/${file} >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
 done
 
+
 #
 
 echo -e "\n=> Generating and setuping vhosts..."
+echo -e "\n Generating and setuping vhosts...\n" >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
 for node in "${APPS[@]}"
 do
 	IFS='|' read -r -a vhost <<< "$node"
@@ -89,8 +106,9 @@ do
 
 done
 
+
 echo -e "\n=> Reloading Apache\n"
+
 usermod -a -G vboxsf www-data >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
 
-#service apache2 reload >> /vagrant/log/vhosts.log 2>&1
 service apache2 start >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1

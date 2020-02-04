@@ -11,7 +11,8 @@ repo = path_prefix + "git"
 
 Vagrant.configure("2") do |config|
 
-    config.vm.box = "debian/stretch64"
+    #config.vm.box = "debian/stretch64"
+    config.vm.box = "debian/contrib-buster64"
 
 	config.vm.network "private_network", ip: vm_ip_address
 	config.vm.hostname = vm_name

@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-#url="omicron00.local"
-#host=${vhost[0]}
-#root=${vhost[2]}
-#ssl=${vhost[1]}
-
 url=$1	# argument 1
 host=$2	# argument 2
 ssl=$3	# argument 3

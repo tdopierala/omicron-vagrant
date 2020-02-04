@@ -6,4 +6,6 @@ cakephp2adminlte|http||
 myweather|https|/vue/dist|
 symfony4restapi|https|/public|
 s4api|https|/public|
-omi-search|https|/webroot|
+omi-search|https|/public|
+telemedico|https|/public|
+sandman|http|/webroot|
