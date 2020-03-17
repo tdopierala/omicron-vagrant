@@ -32,9 +32,8 @@ echo -e "\n=> Installing Apache Server...\n"
 apt-get -y install apache2 >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 
 echo -e "\n=> Adding ServerName configuration...\n"
-echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/servername.conf
+echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/servername.conf >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
 a2enconf servername >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
-service apache2 reload >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
 
 echo -e "\n=> Enabling mod-rewrite...\n"
 a2enmod rewrite >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
@@ -44,6 +43,8 @@ a2enmod ssl >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 
 echo -e "\n=> Enabling headers mod...\n"
 a2enmod headers >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+
+service apache2 reload >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
 
 #########################################################################################
 
