@@ -88,8 +88,10 @@ chmod +x /usr/local/bin/composer >> /vagrant-dir/log/vm-build-$(date +\%F).log 2
 echo -e "\n=> Setting symlinks for vhosts...\n"
 for node in "${APPS[@]}"
 do
-	IFS='|' read -r -a dir <<< "$node"
-    ln -s "/mnt/repo/${dir[0]}" "/var/www/html/"$dir >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+	if [[ ! -L /var/www/html/$dir ]]; then
+		IFS='|' read -r -a dir <<< "$node"
+    	ln -s "/mnt/repo/${dir[0]}" "/var/www/html/"$dir >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+	fi
 done
 
 echo -e "\n"

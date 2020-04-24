@@ -1,11 +1,14 @@
+phpmyadmin|http||
 omicron|http||
 odin|http|/public|
 digit|http|/webroot|
-phpmyadmin|http||
 cakephp2adminlte|http||
 myweather|https|/vue/dist|
-symfony4restapi|https|/public|
-s4api|https|/public|
+symfony4-rest-api|https|/public|
 omi-search|https|/public|
 telemedico|https|/public|
 sandman|http|/webroot|
+cake4|http|/webroot|
+wiki-wardx-net|http|/webroot|
+cms-wardx-net|http|/webroot|
+wxframework|http|/public|
