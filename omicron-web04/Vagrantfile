@@ -5,23 +5,41 @@ path_prefix = "C:/";
 share_user = "www-data"
 
 # server configuration
-vm_ip_address = "192.168.56.104"
+vm_ip_address = "192.168.56.204"
 vm_name = "omicron-web04"
-gdrive_repo = path_prefix + "gdrive/Repositories"
+repo = path_prefix + "git"
 
 Vagrant.configure("2") do |config|
 
-	config.vm.box = "debian/jessie64"
-  
+    config.vm.box = "debian/contrib-buster64"
+
 	config.vm.network "private_network", ip: vm_ip_address
-	#config.vm.hostname = vm_name
-	
-	#config.vm.provision :shell, path: "provisioners/bootstrap.sh"
+	config.vm.hostname = vm_name
 
-	#config.vm.provision :shell, path: "provisioners/vhosts.sh"
+	config.vm.synced_folder './', "/vagrant-dir", owner: "vagrant", group: "vagrant"
+    config.vm.synced_folder "#{repo}/", "/mnt/repo", owner:"#{share_user}", group:"www-data"
 
-	config.proxy.http     = "http://135.245.192.7:8000/"
-	config.proxy.https    = "http://135.245.192.7:8000/"
-	config.proxy.no_proxy = "localhost,127.0.0.1/"
+	# Provider-specific configuration so you can fine-tune various
+	# backing providers for Vagrant. These expose provider-specific options.
+	# Example for VirtualBox:
+	#
+	# config.vm.provider "virtualbox" do |vb|
+	#   # Display the VirtualBox GUI when booting the machine
+	#   vb.gui = true
+	#
+	#   # Customize the amount of memory on the VM:
+	#   vb.memory = "1024"
+	# end
+	#
+	# View the documentation for the provider you are using for more
+	# information on available options.
+
+	# provisioning   
+	#config.vm.provision:shell, keep_color:true, path:"provisioners/bootstrap.sh"
+	#config.vm.provision:shell, path: "provisioners/vhosts.sh"
+
+	#config.proxy.http     = "http://135.245.192.7:8000/"
+	#config.proxy.https    = "http://135.245.192.7:8000/"
+	#config.proxy.no_proxy = "localhost,127.0.0.1/"
 
 end
