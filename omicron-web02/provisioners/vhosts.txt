@@ -1,0 +1,11 @@
+omicron|http||
+odin|http|/public|
+digit|http|/webroot|
+phpmyadmin|http||
+cakephp2adminlte|http||
+myweather|https|/vue/dist|
+symfony4restapi|https|/public|
+s4api|https|/public|
+omi-search|https|/public|
+telemedico|https|/public|
+sandman|http|/webroot|
