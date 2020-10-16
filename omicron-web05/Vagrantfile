@@ -1,0 +1,36 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+path_prefix = "C:/";
+share_user = "www-data"
+
+# server configuration
+vm_ip_address = "192.168.56.205"
+vm_name = "dev2.promoogle.local"
+repo = path_prefix + "git"
+
+Vagrant.configure("2") do |config|
+
+    config.vm.box = "debian/stretch64"
+
+	config.vm.network "private_network", ip: vm_ip_address
+	config.vm.hostname = vm_name
+
+	config.vm.synced_folder './', "/vagrant-dir", owner: "vagrant", group: "vagrant"
+    #config.vm.synced_folder "#{repo}/", "/mnt/repo", owner:"#{share_user}", group:"www-data"
+    config.vm.synced_folder "#{repo}/promoogle/", "/var/www/html/promoogle", owner:"#{share_user}", group:"www-data"
+    config.vm.synced_folder "#{repo}/promoogle2/", "/var/www/html/promoogle2", owner:"#{share_user}", group:"www-data"
+    config.vm.synced_folder "#{repo}/gigya-console/", "/var/www/html/gigya", owner:"#{share_user}", group:"www-data"
+    config.vm.synced_folder "#{repo}/fw1/", "/var/www/html/fw1", owner:"#{share_user}", group:"www-data"
+
+	config.vm.provider "virtualbox" do |vb|
+	  vb.memory = "1024"
+	end
+
+	# provisioning   
+	config.vm.provision:shell, keep_color:false, path:"provisioners/bootstrap.sh"
+
+	#config.vm.provision:shell, path: "provisioners/vhosts.sh"
+
+
+end
