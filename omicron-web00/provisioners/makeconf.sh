@@ -6,7 +6,12 @@ ssl=$3	# argument 3
 root=$4	# argument 4
 
 domain="${host}.${url}"
-path="${host}${root}"
+
+if [[ root == "" ]]; then
+	path=${host}
+else
+	path="${host}/${root}"
+fi
 
 	echo "<VirtualHost *:80>"
 	echo ""

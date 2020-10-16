@@ -1,0 +1,49 @@
+{
+  "vhosts": [
+    {
+      "name": "omicron",
+      "ssl": false,
+      "path": ""
+    },{
+      "name": "odin",
+      "ssl": false,
+      "path": "public"
+    },{
+      "name": "digit",
+      "ssl": false,
+      "path": "webroot"
+    },{
+      "name": "cakephp2adminlte",
+      "ssl": false,
+      "path": ""
+    },{
+      "name": "myweather",
+      "ssl": true,
+      "path": "vue/dist"
+    },{
+      "name": "symfony4-rest-api",
+      "ssl": true,
+      "path": "public"
+    },{
+      "name": "omi-search",
+      "ssl": true,
+      "path": "public"
+    },{
+      "name": "sandman",
+      "ssl": false,
+      "path": "webroot"
+    },{
+      "name": "cms-wardx-net",
+      "ssl": false,
+      "path": "webroot"
+    },{
+      "name": "wxframework",
+      "ssl": false,
+      "path": "public"
+    },{
+      "name": "omicron-cake-cms",
+      "ssl": false,
+      "path": "webroot"
+    }
+  ]
+}
