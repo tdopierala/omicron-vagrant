@@ -11,31 +11,16 @@ repo = path_prefix + "git"
 
 Vagrant.configure("2") do |config|
 
-    #config.vm.box = "debian/stretch64"
-    config.vm.box = "debian/contrib-buster64"
+  #config.vm.box = "debian/stretch64"
+  config.vm.box = "debian/contrib-buster64"
 
 	config.vm.network "private_network", ip: vm_ip_address
 	config.vm.hostname = vm_name
 
 	config.vm.synced_folder './', "/vagrant-dir", owner: "vagrant", group: "vagrant"
-    config.vm.synced_folder "#{repo}/", "/mnt/repo", owner:"#{share_user}", group:"www-data"
+  config.vm.synced_folder "#{repo}/", "/mnt/repo", owner:"#{share_user}", group:"www-data"
 
-	# Provider-specific configuration so you can fine-tune various
-	# backing providers for Vagrant. These expose provider-specific options.
-	# Example for VirtualBox:
-	#
-	# config.vm.provider "virtualbox" do |vb|
-	#   # Display the VirtualBox GUI when booting the machine
-	#   vb.gui = true
-	#
-	#   # Customize the amount of memory on the VM:
-	#   vb.memory = "1024"
-	# end
-	#
-	# View the documentation for the provider you are using for more
-	# information on available options.
-
-	# provisioning   
+	# provisioning
 	config.vm.provision:shell, keep_color:true, path:"provisioners/bootstrap.sh"
 	config.vm.provision:shell, path: "provisioners/vhosts.sh"
 
