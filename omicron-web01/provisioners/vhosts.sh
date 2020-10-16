@@ -3,17 +3,39 @@
 url="omicron01.local"
 IFS=$'\n' read -d '' -r -a APPS < /vagrant-dir/provisioners/vhosts.txt
 
-echo -e "\n=> Adding nonexistent symlinks for vhosts..."
-echo -e "\n Adding nonexistent symlinks for vhosts...\n" >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
+echo -e "\n=> Setting symlinks for vhosts..."
+
+if [[ ! -L /mnt/repo/phpmyadmin ]]; then
+	if [ -x "$(command -v git)" ]; then
+		git clone https://github.com/phpmyadmin/phpmyadmin /mnt/repo/phpmyadmin >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+	fi
+fi
+
 for node in "${APPS[@]}"
 do
 	IFS='|' read -r -a dir <<< "$node"
-    if [[ ! -L /var/www/html/$dir ]]; then
-		ln -s "/mnt/repo/${dir[0]}" "/var/www/html/"$dir >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
-        echo -e " > generating symlink for vhost $dir (/var/www/html/$dir)"
-	fi    
+
+	if [[ ! -L /mnt/repo/$dir ]]; then
+		if [ -x "$(command -v git)" ]; then
+			git clone https://github.com/tdopierala/$dir /mnt/repo/$dir >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+		fi
+	fi
+
+	if [[ ! -L /var/www/html/$dir ]]; then
+    	ln -s "/mnt/repo/${dir[0]}" "/var/www/html/"$dir >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+	fi
 done
 
+#echo -e "\n=> Adding nonexistent symlinks for vhosts..."
+#echo -e "\n Adding nonexistent symlinks for vhosts...\n" >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
+#for node in "${APPS[@]}"
+#do
+#	IFS='|' read -r -a dir <<< "$node"
+#    if [[ ! -L /var/www/html/$dir ]]; then
+#		ln -s "/mnt/repo/${dir[0]}" "/var/www/html/"$dir >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
+#        echo -e " > generating symlink for vhost $dir (/var/www/html/$dir)"
+#	fi
+#done
 
 # usuwanie istniejących vhostów
 
@@ -25,8 +47,7 @@ do
 	then
 		a2dissite $site >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
 
-		if [[ -f /etc/apache2/sites-available/${site} ]]
-		then
+		if [[ -f /etc/apache2/sites-available/${site} ]]; then
 			rm /etc/apache2/sites-available/${site} >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
 		fi
 
@@ -72,14 +93,13 @@ do
 
 	filename="${vhost[0]}.conf"
 
-	if [[ -f /vagrant-dir/configs/vhosts/${host}.conf ]]
-	then
+	if [[ -f /vagrant-dir/configs/vhosts/${host}.conf ]]; then
 		rm /vagrant-dir/configs/vhosts/${host}.conf >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
 	fi
 
 	/vagrant-dir/provisioners/makeconf.sh ${url} ${host} ${ssl} ${root} > /vagrant-dir/configs/vhosts/${host}.conf
 	echo -e " > vhost config for ${host} generated"
-	
+
 	if [[ -f /etc/apache2/sites-available/$filename ]]; then
 		rm /etc/apache2/sites-available/$filename >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
 	fi
@@ -87,9 +107,13 @@ do
 	cp /vagrant-dir/configs/vhosts/$filename /etc/apache2/sites-available/$filename >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
 	a2ensite $filename >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
 	echo -e " > generating vhost $filename"
-	
+
+	if [[ ! -d /vagrant-dir/configs/cert ]]; then
+		mkdir /vagrant-dir/configs/cert
+	fi
+
 	cd /vagrant-dir/configs/cert/
-	
+
 	key="${domain}.key"
 
 	if [[ ! -f /vagrant-dir/configs/cert/$key ]]; then
@@ -111,4 +135,4 @@ echo -e "\n=> Reloading Apache\n"
 
 usermod -a -G vboxsf www-data >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
 
-service apache2 start >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
+service apache2 restart >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
