@@ -15,7 +15,7 @@ fi
 for node in $(jq -c ".vhosts[]" $json)
 do
 	name=$(echo $node | jq ".name" | tr -d '"')
-  path=$(echo $node | jq ".path" | tr -d '"')
+	path=$(echo $node | jq ".path" | tr -d '"')
 
 	if [[ ! -d /mnt/repo/$name ]]; then
 		if [ -x "$(command -v git)" ]; then

@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
 # Variables
-phpv=7.4
+#phpv=7.4
 
-DBHOST=localhost
-DBNAME=vagrant
-DBUSER=omicron
-DBPASSWD=12345
+#DBHOST=localhost
+#DBNAME=vagrant
+#DBUSER=omicron
+#DBPASSWD=12345
 
-IFS=$'\n' read -d '' -r -a APPS < /vagrant-dir/provisioners/vhosts.txt
+#IFS=$'\n' read -d '' -r -a APPS < /vagrant-dir/provisioners/vhosts.txt
 
 echo -e "\n"
 
@@ -17,34 +17,38 @@ apt-get -y update >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 #apt-get -y upgrade >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 
 echo -e "\n=> Install base packages..."
-apt-get -y install vim net-tools curl build-essential software-properties-common git zip unzip >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+#apt-get -y install vim net-tools curl build-essential software-properties-common git zip unzip >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+./vmdir/prov/build-essential.sh >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 
-echo -e "\n=> Installing Lynx for omi-search..."
-apt-get -y install lynx >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+echo -e "\n=> Installing Lynx..."
+#apt-get -y install lynx >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+./vmdir/prov/lynx.sh >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 
 echo -e "\n=> Install Node.js...\n"
-curl -sL https://deb.nodesource.com/setup_13.x | sudo bash - >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-apt-get -y install nodejs >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+#curl -sL https://deb.nodesource.com/setup_13.x | sudo bash - >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+#apt-get -y install nodejs >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+./vmdir/prov/nodejs.sh >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 
 #########################################################################################
 
 echo -e "\n=> Installing Apache Server..."
-apt-get -y install apache2 >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+#apt-get -y install apache2 >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 
-echo -e "\n=> Adding ServerName configuration..."
-echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/servername.conf >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-a2enconf servername >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+#echo -e "\n=> Adding ServerName configuration..."
+#echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/servername.conf >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+#a2enconf servername >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 
-echo -e "\n=> Enabling mod-rewrite..."
-a2enmod rewrite >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+#echo -e "\n=> Enabling mod-rewrite..."
+#a2enmod rewrite >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 
-echo -e "\n=> Enabling ssl mod..."
-a2enmod ssl >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+#echo -e "\n=> Enabling ssl mod..."
+#a2enmod ssl >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 
-echo -e "\n=> Enabling headers mod..."
-a2enmod headers >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+#echo -e "\n=> Enabling headers mod..."
+#a2enmod headers >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 
-service apache2 reload >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
+#service apache2 reload >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
+./vmdir/prov/apache2.sh >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
 
 #########################################################################################
 

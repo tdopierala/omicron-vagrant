@@ -11,18 +11,18 @@ repo = path_prefix + "git"
 
 Vagrant.configure("2") do |config|
 
-  #config.vm.box = "debian/stretch64"
   config.vm.box = "debian/contrib-buster64"
 
 	config.vm.network "private_network", ip: vm_ip_address
 	config.vm.hostname = vm_name
 
-	config.vm.synced_folder './', "/vagrant-dir", owner: "vagrant", group: "vagrant"
-  config.vm.synced_folder "#{repo}/", "/mnt/repo", owner:"#{share_user}", group:"www-data"
+	config.vm.synced_folder	'./',				"/vmdir",		owner: "vagrant",		group: "vagrant"
+	config.vm.synced_folder	'../provisioners',	"/vmdir/prov",	owner: "vagrant",		group: "vagrant"
+	config.vm.synced_folder	"#{repo}/",			"/mnt/repo",	owner: "#{share_user}",	group:"www-data"
 
 	# provisioning
-	config.vm.provision:shell, keep_color:true, path:"provisioners/bootstrap.sh"
-	config.vm.provision:shell, path: "provisioners/vhosts.sh"
+	#config.vm.provision:shell, keep_color:true, path:"provisioners/bootstrap.sh"
+	#config.vm.provision:shell, path: "provisioners/vhosts.sh"
 
 	#config.proxy.http     = "http://135.245.192.7:8000/"
 	#config.proxy.https    = "http://135.245.192.7:8000/"
