@@ -28,7 +28,7 @@ if [[ ${ssl} == "https" ]]; then
 	echo "<VirtualHost *:443>"
 	echo ""
 	echo "	ServerName ${domain}"
-	echo "	ServerAdmin webmaster@wardx.net>"
+	echo "	ServerAdmin webmaster@wardx.net"
 	echo "	DocumentRoot /var/www/html/${path}"
 	echo ""
 	echo "	SSLEngine on"

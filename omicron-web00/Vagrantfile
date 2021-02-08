@@ -22,7 +22,7 @@ Vagrant.configure("2") do |config|
 
 	# provisioning
 	#config.vm.provision:shell, keep_color:true, path:"provisioners/bootstrap.sh"
-	#config.vm.provision:shell, path: "provisioners/vhosts.sh"
+	#config.vm.provision:shell, keep_color:true, path: "provisioners/vhosts.sh"
 
 	#config.proxy.http     = "http://135.245.192.7:8000/"
 	#config.proxy.https    = "http://135.245.192.7:8000/"

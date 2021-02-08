@@ -1,99 +1,42 @@
 #!/usr/bin/env bash
 
-# Variables
-#phpv=7.4
+echo -e "\n=> Updating packages list"
+sudo apt-get -y update				>> /vmdir/log/vm-build-$(date +\%F).log 2>&1
 
-#DBHOST=localhost
-#DBNAME=vagrant
-#DBUSER=omicron
-#DBPASSWD=12345
+echo -e "\n=> Install base packages"
+/vmdir/prov/build-essential.sh		>> /vmdir/log/vm-build-$(date +\%F).log 2>&1
 
-#IFS=$'\n' read -d '' -r -a APPS < /vagrant-dir/provisioners/vhosts.txt
+echo -e "\n=> Installing Lynx"
+/vmdir/prov/lynx.sh					>> /vmdir/log/vm-build-$(date +\%F).log 2>&1
 
-echo -e "\n"
-
-echo -e "\n=> Updating packages list..."
-apt-get -y update >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-#apt-get -y upgrade >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-
-echo -e "\n=> Install base packages..."
-#apt-get -y install vim net-tools curl build-essential software-properties-common git zip unzip >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-./vmdir/prov/build-essential.sh >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-
-echo -e "\n=> Installing Lynx..."
-#apt-get -y install lynx >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-./vmdir/prov/lynx.sh >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-
-echo -e "\n=> Install Node.js...\n"
-#curl -sL https://deb.nodesource.com/setup_13.x | sudo bash - >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-#apt-get -y install nodejs >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-./vmdir/prov/nodejs.sh >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+echo -e "\n=> Install Node.js"
+/vmdir/prov/nodejs.sh				>> /vmdir/log/vm-build-$(date +\%F).log 2>&1
 
 #########################################################################################
 
-echo -e "\n=> Installing Apache Server..."
-#apt-get -y install apache2 >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-
-#echo -e "\n=> Adding ServerName configuration..."
-#echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/servername.conf >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-#a2enconf servername >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-
-#echo -e "\n=> Enabling mod-rewrite..."
-#a2enmod rewrite >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-
-#echo -e "\n=> Enabling ssl mod..."
-#a2enmod ssl >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-
-#echo -e "\n=> Enabling headers mod..."
-#a2enmod headers >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-
-#service apache2 reload >> /vagrant-dir/log/vm-hosts-$(date +\%F).log 2>&1
-./vmdir/prov/apache2.sh >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+echo -e "\n=> Installing Apache Server"
+/vmdir/prov/apache2.sh				>> /vmdir/log/vm-build-$(date +\%F).log 2>&1
 
 #########################################################################################
 
-echo -e "\n=> Installing PHP${phpv} packages..."
-apt-get -y install ca-certificates apt-transport-https >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add - >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-echo "deb https://packages.sury.org/php/ buster main" | sudo tee /etc/apt/sources.list.d/php.list >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-
-apt-get update >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-apt-get -y install php${phpv} php${phpv}-cli php${phpv}-common php${phpv}-mysql php${phpv}-xml php${phpv}-sqlite php${phpv}-gd php${phpv}-intl libapache2-mod-php${phpv} >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-apt-get -y install php${phpv}-curl php${phpv}-mbstring >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-apt-get -y install php-gettext php-pear php-zip >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
+echo -e "\n=> Installing PHP packages"
+/vmdir/prov/php7.sh					>> /vmdir/log/vm-build-$(date +\%F).log 2>&1
 
 #########################################################################################
 
-echo -e "\n=> Install MySQL packages and settings..."
-debconf-set-selections <<< "mysql-server mysql-server/root_password password $DBPASSWD"
-debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $DBPASSWD"
-apt-get -y install mariadb-server >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-
-mysql -uroot -p$DBPASSWD -e "GRANT ALL PRIVILEGES ON *.* to '$DBUSER'@'%' identified by '$DBPASSWD' WITH GRANT OPTION;" >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-
-if [[ -f /vagrant-dir/backup/full-backup-latest.sql ]]; then
-	echo -e "\n=> Loading database from backup..."
-	#mysql -uroot -p$DBPASSWD < /vagrant-dir/backup/full-backup-$(date +\%F).sql
-	mysql -uroot -p$DBPASSWD < /vagrant-dir/backup/full-backup-latest.sql
-else
-	echo -e "\n=> Initializing new database..."
-	mysql -uroot -p$DBPASSWD < /vagrant-dir/backup/database.sql
-fi
+echo -e "\n=> Install MySQL packages and settings"
+/vmdir/prov/mysql.sh				>> /vmdir/log/vm-build-$(date +\%F).log 2>&1
 
 #########################################################################################
 
-if [ -x "$(command -v php)" ]; then
-	echo -e "\n=> Installing Composer"
-	curl -sS https://getcomposer.org/installer | php >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-	mv -f composer.phar /usr/local/bin/composer >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-	chmod +x /usr/local/bin/composer >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-fi
+echo -e "\n=> Installing Composer"
+/vmdir/prov/composer.sh				>> /vmdir/log/vm-build-$(date +\%F).log 2>&1
 
 #########################################################################################
 
 cd ~
-apt-get -y install figlet >> /vagrant-dir/log/vm-build-$(date +\%F).log 2>&1
-figlet "omicron-web00" > motd
-mv motd /etc/motd
+sudo apt-get -y install figlet		>> /vmdir/log/vm-build-$(date +\%F).log 2>&1
+sudo figlet "omicron-web00" > motd
+sudo mv motd /etc/motd
 
 echo -e "\n"
