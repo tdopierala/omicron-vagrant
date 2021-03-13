@@ -2,9 +2,9 @@
 
 #echo -e "\n=> Installing PHP${version} packages..."
 
-version=7.4
+version=8.0
 base_pkg=( ca-certificates apt-transport-https )
-php_pkg=( php${version} php${version}-cli php${version}-common php${version}-mysql php${version}-xml php${version}-sqlite php${version}-gd php${version}-intl libapache2-mod-php${version} php${version}-curl php${version}-mbstring php${version}-zip php-gettext php-pear )
+php_pkg=( php${version} php${version}-cli php${version}-common php${version}-mysql php${version}-xml php${version}-sqlite php${version}-gd php${version}-intl libapache2-mod-php${version} php${version}-curl php${version}-mbstring php-gettext php-pear php-zip )
 
 install_php() {
 

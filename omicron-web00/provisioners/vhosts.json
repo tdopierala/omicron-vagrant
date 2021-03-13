@@ -1,49 +1,103 @@
 {
-  "vhosts": [
-    {
-      "name": "omicron",
-      "ssl": false,
-      "path": ""
-    },{
-      "name": "odin",
-      "ssl": false,
-      "path": "public"
-    },{
-      "name": "digit",
-      "ssl": false,
-      "path": "webroot"
-    },{
-      "name": "cakephp2adminlte",
-      "ssl": false,
-      "path": ""
-    },{
-      "name": "myweather",
-      "ssl": true,
-      "path": "vue/dist"
-    },{
-      "name": "symfony4-rest-api",
-      "ssl": true,
-      "path": "public"
-    },{
-      "name": "omi-search",
-      "ssl": true,
-      "path": "public"
-    },{
-      "name": "sandman",
-      "ssl": false,
-      "path": "webroot"
-    },{
-      "name": "cms-wardx-net",
-      "ssl": false,
-      "path": "webroot"
-    },{
-      "name": "wxframework",
-      "ssl": false,
-      "path": "public"
-    },{
-      "name": "omicron-cake-cms",
-      "ssl": false,
-      "path": "webroot"
-    }
-  ]
+    "vhosts": [
+        {
+            "name": "cakephp2adminlte",
+            "ssl": false,
+            "dir": "",
+            "path": "",
+            "gitrepo": ""
+        },{
+            "name": "ccms",
+            "ssl": true,
+            "dir": "webroot",
+            "path": "",
+            "gitrepo": ""
+        },{
+            "name": "csslight-fw",
+            "ssl": false,
+            "dir": "",
+            "path": "",
+            "gitrepo": ""
+        },{
+            "name": "digit",
+            "ssl": false,
+            "dir": "webroot",
+            "path": "",
+            "gitrepo": ""
+        },{
+            "name": "lcms",
+            "ssl": true,
+            "dir": "public",
+            "path": "",
+            "gitrepo": ""
+        },{
+            "name": "odin",
+            "ssl": false,
+            "dir": "public",
+            "path": "",
+            "gitrepo": ""
+        },{
+            "name": "omicron",
+            "ssl": true,
+            "dir": "webroot",
+            "path": "",
+            "gitrepo": ""
+        },{
+            "name": "omicron-cake-cms",
+            "ssl": true,
+            "dir": "webroot",
+            "path": "",
+            "gitrepo": ""
+        },{
+            "name": "omi-search-engine",
+            "ssl": true,
+            "dir": "",
+            "path": "",
+            "gitrepo": ""
+        },{
+            "name": "symfony-rest-api",
+            "ssl": true,
+            "dir": "public",
+            "path": "",
+            "gitrepo": ""
+        },{
+            "name": "wxframework",
+            "ssl": false,
+            "dir": "public",
+            "path": "",
+            "gitrepo": ""
+        }
+
+        ,{
+            "name": "playground",
+            "ssl": false,
+            "dir": "",
+            "path": "",
+            "gitrepo": ""
+        },{
+            "name": "php",
+            "ssl": false,
+            "dir": "",
+            "path": "playground/",
+            "gitrepo": ""
+        },{
+            "name": "laravel-tour-of-heroes",
+            "ssl": false,
+            "dir": "public",
+            "path": "playground/",
+            "gitrepo": ""
+        },{
+            "name": "laravel-crash-course",
+            "ssl": false,
+            "dir": "public",
+            "path": "playground/",
+            "gitrepo": ""
+        },{
+            "name": "ptak",
+            "ssl": true,
+            "dir": "public",
+            "path": "",
+            "gitrepo": ""
+        }
+    ]
 }

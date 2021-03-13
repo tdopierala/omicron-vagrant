@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
 
-url="omicron00.local"
+server="omicron00.local"
 #IFS=$'\n' read -d '' -r -a APPS < /vmdir/provisioners/vhosts.txt
 json="/vmdir/provisioners/vhosts.json"
+
+if [[ ! -f $json ]]; then
+    echo -e "File $json don't exist. Script stoped."
+    exit 1
+fi
 
 echo -e "\n=> Setting symlinks for vhosts..."
 
@@ -14,18 +19,23 @@ fi
 
 for node in $(jq -c ".vhosts[]" $json)
 do
-	name=$(echo $node | jq ".name" | tr -d '"')
-	path=$(echo $node | jq ".path" | tr -d '"')
+	name=$(echo $node | jq -r ".name")
+    path=$(echo $node | jq -r ".path")
+    gitrepo=$(echo $node | jq -r ".gitrepo")
 
-	if [[ ! -d /mnt/repo/$name ]]; then
+	if [[ ! -z "$gitrepo" && ! -d /mnt/repo/$name ]]; then
 		if [ -x "$(command -v git)" ]; then
 			git clone https://github.com/tdopierala/$name /mnt/repo/$name >> /vmdir/log/vm-build-$(date +\%F).log 2>&1
 		fi
 	fi
 
-	if [[ ! -L /var/www/html/$name ]]; then
-    	ln -s "/mnt/repo/$name/$path" "/var/www/html/"$name >> /vmdir/log/vm-build-$(date +\%F).log 2>&1
-	fi
+    if [[ -L /var/www/html/$name ]]; then
+        echo -e " - removing old symlink $name"
+    	rm /var/www/html/$name
+    fi
+
+    echo -e " - creating new symlink $name"
+    ln -s "/mnt/repo/$path$name" "/var/www/html/"$name >> /vmdir/log/vm-build-$(date +\%F).log 2>&1
 done
 
 #echo -e "\n=> Adding nonexistent symlinks for vhosts..."
@@ -43,7 +53,7 @@ done
 
 echo -e "\n=> Disabling vhosts..."
 echo -e "\n Disabling vhosts...\n" >> /vmdir/log/vm-hosts-$(date +\%F).log 2>&1
-for site in `apache2ctl -S | grep '80 namevhost' | grep -o 'sites-enabled/[^:]*' | cut -c 15-`
+for site in `sudo apache2ctl -S | grep '80 namevhost' | grep -o 'sites-enabled/[^:]*' | cut -c 15-`
 do
 	if [[ "$site" != "000-default.conf" ]]
 	then
@@ -53,7 +63,7 @@ do
 			rm /etc/apache2/sites-available/${site} >> /vmdir/log/vm-hosts-$(date +\%F).log 2>&1
 		fi
 
-		echo -e " > vhost $site disabled"
+		echo -e " - vhost $site disabled and removed"
 	fi
 done
 
@@ -69,7 +79,7 @@ do
 		if [[ -f /etc/apache2/sites-available/${file} ]]; then
 			rm /etc/apache2/sites-available/${file} >> /vmdir/log/vm-hosts-$(date +\%F).log 2>&1
 		fi
-		echo -e " > removing old config: $file"
+		echo -e " - removing old config: $file"
 	fi
 done
 
@@ -80,18 +90,16 @@ do
 done
 
 
-#
-
 echo -e "\n=> Generating and setuping vhosts..."
 echo -e "\n Generating and setuping vhosts...\n" >> /vmdir/log/vm-hosts-$(date +\%F).log 2>&1
 for node in $(jq -c ".vhosts[]" $json)
 do
-	host=$(echo $node | jq ".name" | tr -d '"')
-	domain="${host}.${url}"
-	root=$(echo $node | jq ".path" | tr -d '"')
-	filename="$host.conf"
+	host=$(echo $node | jq -r ".name")
+	domain="${host}.${server}"
+	dir=$(echo $node | jq -r ".dir")
+	config="$host.conf"
 
-	if [[ $(echo $node | jq ".ssl" | tr -d '"') == "true" ]]; then
+	if [[ $(echo $node | jq -r ".ssl") == "true" ]]; then
 		ssl="https"
 	else
 		ssl="http"
@@ -101,16 +109,16 @@ do
 		rm /vmdir/configs/vhosts/${host}.conf >> /vmdir/log/vm-hosts-$(date +\%F).log 2>&1
 	fi
 
-	/vmdir/provisioners/makeconf.sh ${url} ${host} ${ssl} ${root} > /vmdir/configs/vhosts/${host}.conf
-	echo -e " > vhost config for ${host} generated"
+	/vmdir/provisioners/makeconf.sh ${server} ${host} ${ssl} ${dir} > /vmdir/configs/vhosts/${host}.conf
+	echo -e " - [$host]: vhost config generated"
 
-	if [[ -f /etc/apache2/sites-available/$filename ]]; then
-		rm /etc/apache2/sites-available/$filename >> /vmdir/log/vm-hosts-$(date +\%F).log 2>&1
+	if [[ -f /etc/apache2/sites-available/$config ]]; then
+		rm /etc/apache2/sites-available/$config >> /vmdir/log/vm-hosts-$(date +\%F).log 2>&1
 	fi
 
-	cp /vmdir/configs/vhosts/$filename /etc/apache2/sites-available/$filename >> /vmdir/log/vm-hosts-$(date +\%F).log 2>&1
-	a2ensite $filename >> /vmdir/log/vm-hosts-$(date +\%F).log 2>&1
-	echo -e " > generating vhost $filename"
+	cp /vmdir/configs/vhosts/$config /etc/apache2/sites-available/$config >> /vmdir/log/vm-hosts-$(date +\%F).log 2>&1
+	a2ensite $config >> /vmdir/log/vm-hosts-$(date +\%F).log 2>&1
+	echo -e " - [$host]: vhost enabled from config $config"
 
 	if [[ ! -d /vmdir/configs/cert ]]; then
 		mkdir /vmdir/configs/cert
@@ -121,22 +129,23 @@ do
 	key="${domain}.key"
 
 	if [[ ! -f /vmdir/configs/cert/$key ]]; then
-		echo -e " > generating key for $domain..."
+		echo -e " - [$host]: generating key for $domain..."
 		openssl genrsa -out $key 2048 >> /vmdir/log/vm-hosts-$(date +\%F).log 2>&1
 
 		if [[ ! -f /vmdir/configs/cert/"${domain}.cert" ]]; then
-			echo -e " > generating certificate for $domain..."
+			echo -e " - [$host]: generating certificate for $domain..."
 			openssl req -new -x509 -key $key -out $(echo "$domain.cert") -days 3650 -subj /CN=$domain >> /vmdir/log/vm-hosts-$(date +\%F).log 2>&1
 		fi
 	else
-		echo -e " > certificate for $domain was already generated..."
+		echo -e " - [$host]: certificate for $domain was already generated..."
 	fi
 
 done
 
+usermod -a -G vboxsf www-data >> /vmdir/log/vm-hosts-$(date +\%F).log 2>&1
 
 echo -e "\n=> Reloading Apache\n"
 
-usermod -a -G vboxsf www-data >> /vmdir/log/vm-hosts-$(date +\%F).log 2>&1
+service apache2 restart >> /vmdir/log/vm-hosts-$(date +\%F).log 2>&1
 
-service apache2 start >> /vmdir/log/vm-hosts-$(date +\%F).log 2>&1
+echo " - "$(sudo service apache2 status | grep Active: | xargs)
