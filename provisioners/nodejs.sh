@@ -2,7 +2,7 @@
 
 #echo -e "\n=> Install base packages..."
 
-version=15
+version=17
 packages=( nodejs )
 
 for pkg in "${packages[@]}"

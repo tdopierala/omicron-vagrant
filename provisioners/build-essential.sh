@@ -4,7 +4,7 @@
 
 sudo apt-get update
 
-packages=( vim net-tools curl build-essential software-properties-common git zip unzip jq )
+packages=( vim net-tools curl build-essential software-properties-common git zip unzip jq tmux )
 
 for pkg in "${packages[@]}"
 do
