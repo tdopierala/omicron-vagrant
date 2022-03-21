@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+sudo mysql -uroot -p -e "GRANT ALL PRIVILEGES ON *.* to '$DBUSER'@'%' identified by '$DBPASSWD' WITH GRANT OPTION;"
+
+CREATE USER 'lwiki'@'%' IDENTIFIED VIA mysql_native_password USING '***';
+GRANT USAGE ON *.* TO 'lwiki'@'%' REQUIRE NONE WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0;
+CREATE DATABASE IF NOT EXISTS `lwiki`;
+GRANT ALL PRIVILEGES ON `lwiki`.* TO 'lwiki'@'%'; 

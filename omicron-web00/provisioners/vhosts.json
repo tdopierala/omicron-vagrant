@@ -31,6 +31,12 @@
             "path": "",
             "gitrepo": ""
         },{
+            "name": "lwiki",
+            "ssl": true,
+            "dir": "public",
+            "path": "",
+            "gitrepo": ""
+        },{
             "name": "odin",
             "ssl": false,
             "dir": "public",
@@ -43,7 +49,7 @@
             "path": "",
             "gitrepo": ""
         },{
-            "name": "omicron-cake-cms",
+            "name": "omicron-2.0",
             "ssl": true,
             "dir": "webroot",
             "path": "",
