@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-path_prefix = "C:/";
+path_prefix = "/";
 share_user = "www-data"
 
 # server configuration
